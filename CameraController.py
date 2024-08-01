@@ -1,20 +1,6 @@
 from onvif import ONVIFCamera
 
-# Функция для управления зумом
-def set_zoom(ptz_service, profile_token, zoom_level):
-    # get absoluteMove request -- requesta
-    requesta = ptz_service.create_type('AbsoluteMove')
-    requesta.ProfileToken = profile_token
-    if requesta.Position is None:
-        requesta.Position = ptz_service.GetStatus(
-            {'ProfileToken': profile_token}).Position
-    if requesta.Speed is None:
-        requesta.Speed = ptz_service.GetStatus(
-            {'ProfileToken': profile_token}).Position
-        
-    requesta.Position.Zoom.x = zoom_level
-    requesta.Speed.Zoom.x = 1
-    ret = ptz_service.AbsoluteMove(requesta)
+
 
 class CameraController:
     def __init__(self):
@@ -45,27 +31,73 @@ class CameraController:
         # Получение PTZ сервиса камеры
         self.ptz_service = self.camera.create_ptz_service()
         
+        # get ZOOM absoluteMove request -- requesta
+        self.requesta = self.ptz_service.create_type('AbsoluteMove')
+        self.requesta.ProfileToken = self.profile_token
+        if self.requesta.Position is None:
+            self.requesta.Position = self.ptz_service.GetStatus(
+                {'ProfileToken': self.profile_token}).Position
+        if self.requesta.Speed is None:
+            self.requesta.Speed = self.ptz_service.GetStatus(
+                {'ProfileToken': self.profile_token}).Position
+            
+        #init focus etc
+        self.vstoken = self.media_service.GetVideoSources()[0].token
+        self.imaging_service = self.camera.create_imaging_service()
+        self.img_settings = self.imaging_service.GetImagingSettings({'VideoSourceToken': self.vstoken})
+        self.move_focus_request = self.imaging_service.create_type('Move')
+        self.move_focus_request.VideoSourceToken = self.vstoken
+
+        #set exp to auto
+        self.img_settings.Exposure.Mode = 'AUTO'
+        self.imaging_service.SetImagingSettings({'VideoSourceToken': self.vstoken, 'ImagingSettings':self.img_settings})
+
         self.connected = True
         print("Camera connected")
     
+
+    # Функция для управления зумом
+    def set_zoom(self, pos):
+        self.requesta.Position.Zoom.x = pos
+        self.requesta.Speed.Zoom.x = 1
+        ret = self.ptz_service.AbsoluteMove(self.requesta)
+
+
+    def FocusMode(self, autoMode):
+        if autoMode == 1:
+            print("Focus mode set to AUTO")
+            self.img_settings.Focus.AutoFocusMode = 'AUTO'
+            self.imaging_service.SetImagingSettings({'VideoSourceToken': self.vstoken, 'ImagingSettings':self.img_settings})
+        elif autoMode == 0:
+            print("Focus mode set to MANUAL")
+            self.img_settings.Focus.AutoFocusMode = 'MANUAL'
+            self.imaging_service.SetImagingSettings({'VideoSourceToken': self.vstoken, 'ImagingSettings':self.img_settings})
+
     def ZoomHandler(self, pos):
         if self.connected:
             self.zoom_level = pos
             print(f"Zoom set to {pos}")
-            set_zoom(self.ptz_service, self.profile_token, self.zoom_level)
+            self.set_zoom(pos)
         else:
             print("Camera not connected")
     
     def FocusHandler(self, pos):
         if self.connected:
             self.focus_level = pos
+            speed = 1
             print(f"Focus set to {pos}")
+            fc2 = {'Absolute':{'Position':pos, 'Speed':speed}}
+            self.imaging_service.Move({'VideoSourceToken': self.move_focus_request.VideoSourceToken, 'Focus': fc2})
+            #self.imaging_service.Stop({'VideoSourceToken': self.move_focus_request.VideoSourceToken})
         else:
             print("Camera not connected")
     
     def IrisHandler(self, pos):
         if self.connected:
             self.iris_level = pos
+            self.img_settings.Exposure.Iris = pos
+            self.imaging_service.SetImagingSettings({'VideoSourceToken': self.vstoken, 'ImagingSettings':self.img_settings})
+            self.img_settings = self.imaging_service.GetImagingSettings({'VideoSourceToken': self.vstoken})
             print(f"Iris set to {pos}")
         else:
             print("Camera not connected")

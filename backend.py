@@ -40,7 +40,11 @@ def main():
                      i = value
                      print(f"Переменной 'i' присвоено значение {value}")
                      camera.IrisHandler(i)
-                     
+
+                elif parts[0] == 'a' or parts[0] == 'A': 
+                     i = value
+                     print(f"Управление режимом фокуса")
+                     camera.FocusMode(value)
                 else:
                      print(f"Неизвестная команда или неверный формат: {command}")
 
