@@ -49,6 +49,8 @@ class App(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
 
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
+        self.cap = cv2.VideoCapture(self.rtsp_url)
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateFrame)
         self.timer.start(5)
@@ -117,7 +119,6 @@ class App(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
             self.focusDownButton.setDisabled(False)
 
     def make_shot(self):
-        self.cap = cv2.VideoCapture(self.rtsp_url)
         if self.cap:
             try:
                 ret, frame = self.cap.read()
@@ -133,17 +134,24 @@ class App(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
             self.textBrowser.setText('Не удалось сделать снимок. Камера не подключена')
 
     def updateFrame(self):
-        self.cap = cv2.VideoCapture(self.rtsp_url)
         ret, frame = self.cap.read()
         if ret:
             # Convert the frame to a QPixmap for display
-            print(self.widget.frameSize())
-            qImg = QImage(frame.data, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+            var = self.widget.frameSize()
+            print(var.height(), var.width())
+            
+            #target_width, target_height = 640, 480  # Задайте нужный размер
+            target_width = var.width()
+            target_height = int(var.width() / 16 * 9)
+
+            frame = cv2.resize(frame, (target_width, target_height))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            height, width, channel = frame.shape
+            step = channel * width
+
+            qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
             qPix = QPixmap.fromImage(qImg)
             self.widget.setPixmap(qPix)
-
-
-
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

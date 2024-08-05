@@ -22,6 +22,7 @@ class CameraController:
         self.imaging_service = self.camera.create_imaging_service()
         self.img_settings = self.imaging_service.GetImagingSettings({'VideoSourceToken': self.vs_token})
         self.move_focus_request = self.imaging_service.create_type('Move')
+        self.move_focus_request.VideoSourceToken = self.vs_token
 
         self.connected = False
         self.zoom_level = 0
@@ -50,12 +51,6 @@ class CameraController:
     #     self.ptz_service.ContinuousMove(ptz_request)
 
     def connect(self):
-        self.move_focus_request.VideoSourceToken = self.vs_token
-
-        # set exp to auto
-        self.img_settings.Exposure.Mode = 'AUTO'
-        self.imaging_service.SetImagingSettings(
-            {'VideoSourceToken': self.vs_token, 'ImagingSettings': self.img_settings})
         self.connected = True
         # print("Camera connected")
 
