@@ -29,7 +29,7 @@
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
-            <string>Tab 1</string>
+            <string>Боковая камера</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
@@ -49,7 +49,7 @@
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="title">
-            <string>Tab 2</string>
+            <string>Осевая камера</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
@@ -79,7 +79,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Connect</string>
+           <string>Подключиться к камерам</string>
           </property>
          </widget>
         </item>
@@ -92,7 +92,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Zoom</string>
+           <string>Величина Zoom</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -137,7 +137,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Focus</string>
+           <string>Положение фокуса</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -229,7 +229,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Shot!</string>
+           <string>Сделать снимок</string>
           </property>
          </widget>
         </item>
