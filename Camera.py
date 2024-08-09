@@ -79,7 +79,7 @@ class App(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
     def set_zoom(self, value):
         if self.camera and self.camera.connected:
             pos = value / 100
-            self.camera.set_zoom(pos)
+            self.camera.zoom_handler(pos)
             self.zoomSlider.setValue(value)
             self.textBrowser.setText(f'Зум установлен в позицию {self.camera.zoom_level}')
         else:
