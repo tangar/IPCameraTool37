@@ -13,6 +13,7 @@ from CameraController import CameraController
 
 # import MainWindow
 import CameraGuiNew
+import CameraConfig
 
 class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def __init__(self):
@@ -23,11 +24,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.cap_main = None
         self.cap_second = None
 
-        self.rtsp_url_main = "rtsp://admin:6m8vw@198.0.100.108:80/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif"
-        # self.rtsp_url_second = "rtsp://admin:admin@198.0.100.109:554/stream0"
-        self.rtsp_url_second = "rtsp://admin:6m8vw@198.0.100.108:80/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif"
-        
-        self.savePath = './Frames'
+
+        self.camera_config = CameraConfig.CameraConfig(config_file="config2.json")
+        self.camera_config.load_config()
 
         self.find_camera()
         self.connectButton.clicked.connect(lambda: self.connect_camera())
@@ -44,8 +43,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
-        self.cap_main = cv2.VideoCapture(self.rtsp_url_main)
-        self.cap_second = cv2.VideoCapture(self.rtsp_url_second)
+        self.cap_main = cv2.VideoCapture(self.camera_config.rtsp_url_main)
+        self.cap_second = cv2.VideoCapture(self.camera_config.rtsp_url_second)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateFrameMain)
@@ -61,7 +60,10 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
     def find_camera(self):
         try:
-            self.camera = CameraController()
+            self.camera = CameraController(self.camera_config.CAMERA_HOST,
+                                           self.camera_config.CAMERA_PORT,
+                                           self.camera_config.CAMERA_USER,
+                                           self.camera_config.CAMERA_PASS)
         except onvif.exceptions.ONVIFError:
             self.appendText("Отсутствует подключение к камере")
 
