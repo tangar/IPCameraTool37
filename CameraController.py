@@ -1,6 +1,5 @@
 from onvif import ONVIFCamera
 
-
 class CameraController:
     def __init__(self,
                  CAMERA_HOST='198.0.100.108',

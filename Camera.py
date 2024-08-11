@@ -21,6 +21,7 @@ from CameraController import CameraController
 # import MainWindow
 import CameraGuiNew
 import CameraConfig
+import ImageViewer as Viewer
 
 class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def __init__(self):
@@ -31,8 +32,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.cap_main = None
         self.cap_second = None
 
+        self.viewer = Viewer.ImageFileViewer()
 
-        self.camera_config = CameraConfig.CameraConfig(config_file="config2.json")
+        self.camera_config = CameraConfig.CameraConfig(config_file="config.json")
         self.camera_config.load_config()
         self.camera_config.save_config()
         self.find_camera()
@@ -62,34 +64,18 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
         self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
 
-        # Обработка двойного щелчка по элементу
-        self.loggerList.itemDoubleClicked.connect(self.on_item_double_clicked)
-                                                  
-    def on_item_double_clicked(self, item):
-        file_path = item.text()
-        # Проверяем, является ли файл изображением
-        if self.is_image(file_path):
-            self.open_in_system_viewer(file_path)
-        # else:
-        #     QMessageBox.information(self, "Not an Image", "The selected file is not an image.")
+        self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
 
-    def is_image(self, file_path):
-        # Используем QImageReader для проверки формата файла
-        image_reader = QImageReader(file_path)
-        return image_reader.canRead()
-    
-    def open_in_system_viewer(self, file_path):
-        # Открываем изображение в системном приложении по умолчанию
-        try:
-            if sys.platform.startswith('darwin'):
-                subprocess.call(('open', file_path))
-            elif os.name == 'nt':  # Windows
-                os.startfile(file_path)
-            elif os.name == 'posix':  # Linux, Unix, etc.
-                subprocess.call(('xdg-open', file_path))
-        except Exception as e:
-            QMessageBox.warning(self, "Error", f"Failed to open the image: {str(e)}")
+        self.tabWidget.currentChanged.connect(self.on_tab_changed)
 
+    def on_tab_changed(self, index):
+        if (index == 0):
+            # сделать элементы управления активными
+            print(f"Switched to tab index: {index}")
+        elif (index == 1):
+            # сделать элементы управления пассивными
+            print(f"Switched to tab index: {index}")
+              
     def configPath(self):
         self.camera_config.SAVE_PATH = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
         self.camera_config.save_config()
@@ -136,13 +122,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         else:
             self.appendText('Подключение к камере отсутствует')
 
-    def appendText(self, text):
-        now = datetime.now()
-        formatted_time = now.strftime("%Y-%m-%d %H-%M-%S")
-        text2 = formatted_time + ' ' + text
-
-        self.loggerList.insertItem(0, QListWidgetItem(text))
-
     def auto_focus(self):
         auto = self.checkBoxAutoFocus.isChecked()
         self.camera.focus_mode(auto)
@@ -157,40 +136,34 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             self.focusDownButton.setDisabled(False)
 
     def make_shot(self):
-        if self.tabWidget.currentIndex == 0:
-            if self.cap_main:
-                try:
-                    ret, frame = self.cap_main.read()
-                    stamp = datetime.now()
-                    datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
-                    full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
-                    cv2.imwrite(full_file_name, frame)
-                    self.appendText(full_file_name)
-
-                except Exception:
-                    self.appendText(f'Не удалось сделать снимок. 1 {Exception}')
-            else:
-                self.appendText('Не удалось сделать снимок. Камера 1 не подключена')
+        id = self.tabWidget.currentIndex()
+        if id == 0:
+            self.savePicture(self, self.cap_main)
+        if id == 1:
+            self.savePicture(self, self.cap_second)
         else:
-            if self.cap_second:
-                try:
-                    ret, frame = self.cap_second.read()
-                    stamp = datetime.now()
-                    datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
-                    full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
-                    cv2.imwrite(full_file_name, frame)
-                    self.appendText(full_file_name)
+            return
 
-                except Exception:
-                    self.appendText(f'Не удалось сделать снимок. 2 {Exception}')
-            else:
-                self.appendText('Не удалось сделать снимок. Камера 2 не подключена')
+    def savePicture(self, cap: cv2.VideoCapture ):
+        if cap:
+            try:
+                ret, frame = cap.read()
+                stamp = datetime.now()
+                datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
+                full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
+                cv2.imwrite(full_file_name, frame)
+                self.appendText(full_file_name)
+
+            except Exception:
+                self.appendText(f'Не удалось сделать снимок. {Exception}')
+        else:
+            self.appendText('Не удалось сделать снимок. Камера не подключена')
 
     def updateFrameMain(self):
         ret, frame = self.cap_main.read()
         if ret:
             # Convert the frame to a QPixmap for display
-            var = self.main_cam.frameSize()
+            var = self.main_cam_widget.frameSize()
             
             #target_width, target_height = 640, 480  # Задайте нужный размер
             target_width = var.width()
@@ -203,13 +176,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
             qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
             qPix = QPixmap.fromImage(qImg)
-            self.main_cam.setPixmap(qPix)
+            self.main_cam_widget.setPixmap(qPix)
 
     def updateFrameSec(self):
         ret, frame = self.cap_second.read()
         if ret:
             # Convert the frame to a QPixmap for display
-            var = self.second_cam.frameSize()
+            var = self.second_cam_widget.frameSize()
             
             #target_width, target_height = 640, 480  # Задайте нужный размер
             target_width = var.width()
@@ -222,7 +195,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
             qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
             qPix = QPixmap.fromImage(qImg)
-            self.second_cam.setPixmap(qPix)
+            self.second_cam_widget.setPixmap(qPix)
+
+    def appendText(self, text):
+        now = datetime.now()
+        formatted_time = now.strftime("%Y-%m-%d %H-%M-%S")
+        text2 = formatted_time + ' ' + text
+        self.loggerList.insertItem(0, QListWidgetItem(text))
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
