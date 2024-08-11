@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Programming\Python\OnvifUtility\camera-gui-new.ui'
+# Form implementation generated from reading ui file 'D:\Programming\Python\OnvifUtility\CameraGuiNew.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -37,6 +37,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.main_cam.sizePolicy().hasHeightForWidth())
         self.main_cam.setSizePolicy(sizePolicy)
+        self.main_cam.setMinimumSize(QtCore.QSize(1, 0))
         self.main_cam.setObjectName("main_cam")
         self.verticalLayout_2.addWidget(self.main_cam)
         self.tabWidget.addTab(self.tab, "")
@@ -49,9 +50,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.second_cam)
         self.tabWidget.addTab(self.tab_2, "")
         self.verticalLayout_4.addWidget(self.tabWidget)
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setObjectName("textBrowser")
-        self.verticalLayout_4.addWidget(self.textBrowser)
+        self.loggerList = QtWidgets.QListWidget(self.centralwidget)
+        self.loggerList.setObjectName("loggerList")
+        self.verticalLayout_4.addWidget(self.loggerList)
         self.verticalLayout_4.setStretch(0, 6)
         self.verticalLayout_4.setStretch(1, 1)
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
@@ -134,7 +135,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

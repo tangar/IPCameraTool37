@@ -35,7 +35,7 @@ class CameraConfig:
         self.CAMERA_PORT = config.get("CAMERA_PORT", self.default_config["CAMERA_PORT"])
         self.CAMERA_USER = config.get("CAMERA_USER", self.default_config["CAMERA_USER"])
         self.CAMERA_PASS = config.get("CAMERA_PASS", self.default_config["CAMERA_PASS"])
-        self.savePath = config.get("savePath", self.default_config["savePath"])
+        self.SAVE_PATH = config.get("savePath", self.default_config["savePath"])
 
     def save_config(self):
         """Сохраняет текущие параметры в файл JSON."""
@@ -46,12 +46,13 @@ class CameraConfig:
             "CAMERA_PORT": self.CAMERA_PORT,
             "CAMERA_USER": self.CAMERA_USER,
             "CAMERA_PASS": self.CAMERA_PASS,
-            "savePath": self.savePath
+            "savePath": self.SAVE_PATH
         }
         
         try:
             with open(self.config_file, 'w') as f:
                 json.dump(config, f, indent=4)
             print(f"Конфигурация успешно сохранена в {self.config_file}")
+            print(config)
         except IOError as e:
             print(f"Ошибка при сохранении конфигурации в {self.config_file}: {e}")

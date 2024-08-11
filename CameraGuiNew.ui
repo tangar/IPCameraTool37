@@ -40,6 +40,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>1</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string>main camera</string>
               </property>
@@ -64,7 +70,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QTextBrowser" name="textBrowser"/>
+         <widget class="QListWidget" name="loggerList"/>
         </item>
        </layout>
       </item>

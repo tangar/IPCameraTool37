@@ -1,5 +1,8 @@
 from datetime import datetime
 
+import os
+import subprocess
+
 import cv2
 from PyQt5 import QtWidgets
 import sys
@@ -8,6 +11,10 @@ from typing import Optional
 import onvif
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
+
+import sys
+from PyQt5.QtWidgets import QApplication, QListWidget, QListWidgetItem, QVBoxLayout, QWidget, QMessageBox
+from PyQt5.QtGui import QImageReader, QPixmap
 
 from CameraController import CameraController
 
@@ -29,7 +36,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.camera_config.load_config()
         self.camera_config.save_config()
         self.find_camera()
-        self.connectButton.clicked.connect(lambda: self.connect_camera())
+        self.connectButton.clicked.connect(lambda: self.connect_camera_button_clicked())
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
         self.zoomUpButton.clicked.connect(lambda: self.zoomSlider.setValue(self.zoomSlider.value() + self.zoomSlider.singleStep()))
@@ -52,11 +59,40 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.timer.start(5)
         
         self.setPhotoPath.triggered.connect(lambda: self.configPath())
+        self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
+        self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
 
+        # Обработка двойного щелчка по элементу
+        self.loggerList.itemDoubleClicked.connect(self.on_item_double_clicked)
+                                                  
+    def on_item_double_clicked(self, item):
+        file_path = item.text()
+        # Проверяем, является ли файл изображением
+        if self.is_image(file_path):
+            self.open_in_system_viewer(file_path)
+        # else:
+        #     QMessageBox.information(self, "Not an Image", "The selected file is not an image.")
+
+    def is_image(self, file_path):
+        # Используем QImageReader для проверки формата файла
+        image_reader = QImageReader(file_path)
+        return image_reader.canRead()
+    
+    def open_in_system_viewer(self, file_path):
+        # Открываем изображение в системном приложении по умолчанию
+        try:
+            if sys.platform.startswith('darwin'):
+                subprocess.call(('open', file_path))
+            elif os.name == 'nt':  # Windows
+                os.startfile(file_path)
+            elif os.name == 'posix':  # Linux, Unix, etc.
+                subprocess.call(('xdg-open', file_path))
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Failed to open the image: {str(e)}")
 
     def configPath(self):
-        self.savePath = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
-        print(self.savePath)
+        self.camera_config.SAVE_PATH = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
+        self.camera_config.save_config()
 
     def find_camera(self):
         try:
@@ -67,7 +103,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         except onvif.exceptions.ONVIFError:
             self.appendText("Отсутствует подключение к камере")
 
-    def connect_camera(self):
+    def connect_camera_button_clicked(self):
         if self.camera:
             self.camera.connect()
             print(self.camera.zoom_level)
@@ -103,16 +139,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def appendText(self, text):
         now = datetime.now()
         formatted_time = now.strftime("%Y-%m-%d %H-%M-%S")
-        self.textBrowser.append(formatted_time + ' ' + text)
+        text2 = formatted_time + ' ' + text
 
-    def set_iris(self, value):
-        if self.camera and self.camera.connected:
-            pos = value / 100
-            self.camera.iris_handler(pos)
-            self.IrisSlider.setValue(value)
-            self.appendText(f'Диафрагма установлена в позицию {self.camera.iris_level}')
-        else:
-            self.appendText('Подключение к камере отсутствует')
+        self.loggerList.insertItem(0, QListWidgetItem(text))
 
     def auto_focus(self):
         auto = self.checkBoxAutoFocus.isChecked()
@@ -134,28 +163,28 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
                     ret, frame = self.cap_main.read()
                     stamp = datetime.now()
                     datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
-                    full_file_name = "{} Frame.jpg".format(self.savePath + '/' + datetime_str)
+                    full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
                     cv2.imwrite(full_file_name, frame)
-                    self.textBrowser.setText(f'Файл сохранён {full_file_name}')
+                    self.appendText(full_file_name)
 
                 except Exception:
-                    self.textBrowser.setText(f'Не удалось сделать снимок. 1 {Exception}')
+                    self.appendText(f'Не удалось сделать снимок. 1 {Exception}')
             else:
-                self.textBrowser.setText('Не удалось сделать снимок. Камера 1 не подключена')
+                self.appendText('Не удалось сделать снимок. Камера 1 не подключена')
         else:
             if self.cap_second:
                 try:
                     ret, frame = self.cap_second.read()
                     stamp = datetime.now()
                     datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
-                    full_file_name = "{} Frame.jpg".format(self.savePath + '/' + datetime_str)
+                    full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
                     cv2.imwrite(full_file_name, frame)
-                    self.textBrowser.setText(f'Файл сохранён {full_file_name}')
+                    self.appendText(full_file_name)
 
                 except Exception:
-                    self.textBrowser.setText(f'Не удалось сделать снимок. 2 {Exception}')
+                    self.appendText(f'Не удалось сделать снимок. 2 {Exception}')
             else:
-                self.textBrowser.setText('Не удалось сделать снимок. Камера 2 не подключена')
+                self.appendText('Не удалось сделать снимок. Камера 2 не подключена')
 
     def updateFrameMain(self):
         ret, frame = self.cap_main.read()
