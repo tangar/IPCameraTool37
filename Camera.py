@@ -27,7 +27,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.camera_config = CameraConfig.CameraConfig(config_file="config2.json")
         self.camera_config.load_config()
-
+        self.camera_config.save_config()
         self.find_camera()
         self.connectButton.clicked.connect(lambda: self.connect_camera())
 
