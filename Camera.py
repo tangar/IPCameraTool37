@@ -100,8 +100,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
                                            self.camera_config.CAMERA_PORT,
                                            self.camera_config.CAMERA_USER,
                                            self.camera_config.CAMERA_PASS)
-        except onvif.exceptions.ONVIFError:
-            self.appendText("Отсутствует подключение к камере")
+        except onvif.exceptions.ONVIFError as e:
+            self.appendText(f"Отсутствует подключение к камере: {str(e)}")
 
     def connect_camera_button_clicked(self):
         if self.camera:
