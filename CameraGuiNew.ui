@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1043</width>
+    <height>736</height>
+   </rect>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="4,1">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="6,1">
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Боковая камера</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QLabel" name="main_cam">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>1</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>main camera</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Осевая камера</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QLabel" name="second_cam">
+              <property name="text">
+               <string>second camera</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="loggerList"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
+        <item row="0" column="0" colspan="3">
+         <widget class="QPushButton" name="connectButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Подключиться к камерам</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QLabel" name="labelZoom">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Величина Zoom</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0" colspan="3">
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>39</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="9" column="0" colspan="3">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="4" column="0" colspan="3">
+         <widget class="QLabel" name="labelFocus">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Положение фокуса</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1" colspan="2">
+         <widget class="QCheckBox" name="checkBoxAutoFocus">
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="zoomUpButton">
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="focusUpButton">
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>39</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="focusDownButton">
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QSlider" name="FocusSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QSlider" name="zoomSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0" colspan="3">
+         <widget class="QPushButton" name="shotButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Сделать снимок</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="zoomDownButton">
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1043</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="setPhotoPath"/>
+    <addaction name="loadSettings"/>
+    <addaction name="saveSettings"/>
+   </widget>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="setPhotoPath">
+   <property name="text">
+    <string>Путь сохранения фото</string>
+   </property>
+  </action>
+  <action name="loadSettings">
+   <property name="text">
+    <string>Загрузить настройки</string>
+   </property>
+  </action>
+  <action name="saveSettings">
+   <property name="text">
+    <string>Сохранить настройки</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
