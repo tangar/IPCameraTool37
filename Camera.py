@@ -138,9 +138,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def make_shot(self):
         id = self.tabWidget.currentIndex()
         if id == 0:
-            self.savePicture(self, self.cap_main)
+            self.savePicture(self.cap_main)
         if id == 1:
-            self.savePicture(self, self.cap_second)
+            self.savePicture(self.cap_second)
         else:
             return
 
