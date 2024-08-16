@@ -1,5 +1,8 @@
 from datetime import datetime
 
+# возможное решение проблемы с видео
+# https://stackoverflow.com/questions/43665208/how-to-get-the-latest-frame-from-capture-device-camera-in-opencv
+
 import os
 import subprocess
 
@@ -53,6 +56,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
         self.cap_main = cv2.VideoCapture(self.camera_config.rtsp_url_main)
+        self.cap_main.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.cap_second = cv2.VideoCapture(self.camera_config.rtsp_url_second)
 
         self.timer = QTimer(self)
@@ -67,6 +71,10 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
 
         self.tabWidget.currentChanged.connect(self.on_tab_changed)
+
+        self.tabWidget.setCurrentIndex(0)
+        self.connect_camera_button_clicked()
+        self.set_zoom(0)
 
     def on_tab_changed(self, index):
         if (index == 0):

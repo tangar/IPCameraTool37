@@ -28,6 +28,10 @@ class CameraController:
         self.focus_level = 0
         self.iris_level = 0
 
+        # при старте устанавливаем самый широкоугольный режим
+        self.zoom_handler(0)
+
+
     # get ZOOM absoluteMove request
     def get_zoom_request(self):
         request_abs = self.ptz_service.create_type('AbsoluteMove')
