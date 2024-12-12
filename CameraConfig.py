@@ -6,9 +6,9 @@ class CameraConfig:
         # rtsp://admin:admin@198.0.100.109:554/stream0
         # Значения по умолчанию
         self.default_config = {
-            "rtsp_url_main": "rtsp://admin:6m8vw@198.0.100.108:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif",
-            "rtsp_url_second": "rtsp://admin:admin@198.0.100.109:554/stream0",
-            "CAMERA_HOST": "198.0.100.108",
+            "rtsp_url_main": "rtsp://192.168.37.3:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif",
+            "rtsp_url_second": "rtsp://192.168.37.4:554/11",
+            "CAMERA_HOST": "192.168.37.3",
             "CAMERA_PORT": 80,
             "CAMERA_USER": "admin",
             "CAMERA_PASS": "6m8vw",
