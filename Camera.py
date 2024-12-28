@@ -40,7 +40,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.camera_config = CameraConfig.CameraConfig(config_file="config.json")
         self.camera_config.load_config()
         self.camera_config.save_config()
-        self.find_camera()
+        # self.find_camera()
         self.connectButton.clicked.connect(lambda: self.connect_camera_button_clicked())
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
@@ -55,14 +55,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
-        self.cap_main = cv2.VideoCapture(self.camera_config.rtsp_url_main)
-        self.cap_main.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-        self.cap_second = cv2.VideoCapture(self.camera_config.rtsp_url_second)
+        # self.cap_main = cv2.VideoCapture(self.camera_config.rtsp_url_main)
+        # self.cap_second = cv2.VideoCapture(self.camera_config.rtsp_url_second)
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.updateFrameMain)
-        self.timer.timeout.connect(self.updateFrameSec)
-        self.timer.start(5)
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.updateFrameMain)
+        # self.timer.timeout.connect(self.updateFrameSec)
+        # self.timer.start(5)
         
         self.setPhotoPath.triggered.connect(lambda: self.configPath())
         self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
@@ -72,9 +71,12 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.tabWidget.currentChanged.connect(self.on_tab_changed)
 
+        self.lightBotPwm.valueChanged.connect(lambda: self.show_message(self.lightBotPwm.value()))
+        self.lightSidePwm.valueChanged.connect(lambda: self.show_message(self.lightSidePwm.value()))
+
         self.tabWidget.setCurrentIndex(0)
-        self.connect_camera_button_clicked()
-        self.set_zoom(0)
+        # self.connect_camera_button_clicked()
+        # self.set_zoom(0)
 
     def on_tab_changed(self, index):
         if (index == 0):
@@ -210,6 +212,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         formatted_time = now.strftime("%Y-%m-%d %H-%M-%S")
         text2 = formatted_time + ' ' + text
         self.loggerList.insertItem(0, QListWidgetItem(text))
+
+    def show_message(self, value):
+        txt = 'Slider = '+ str(value)
+        print(txt)
+        self.lightBotPwmLabel.setText(str(self.lightBotPwm.value()))
+        self.lightSidePwmLabel.setText(str(self.lightSidePwm.value()))
+
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
