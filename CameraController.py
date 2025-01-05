@@ -2,7 +2,7 @@ from onvif import ONVIFCamera
 
 class CameraController:
     def __init__(self,
-                 CAMERA_HOST='198.0.100.108',
+                 CAMERA_HOST='192.168.37.3',
                  CAMERA_PORT=80,
                  CAMERA_USER='admin',
                  CAMERA_PASS='6m8vw'):
