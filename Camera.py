@@ -3,8 +3,7 @@ from datetime import datetime
 # возможное решение проблемы с видео
 # https://stackoverflow.com/questions/43665208/how-to-get-the-latest-frame-from-capture-device-camera-in-opencv
 
-import os
-import subprocess
+from MyVideoCapture import MyVideoCapture
 
 import cv2
 from PyQt5 import QtWidgets
@@ -55,13 +54,16 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
-        # self.cap_main = cv2.VideoCapture(self.camera_config.rtsp_url_main)
-        # self.cap_second = cv2.VideoCapture(self.camera_config.rtsp_url_second)
-
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.updateFrameMain)
-        # self.timer.timeout.connect(self.updateFrameSec)
-        # self.timer.start(5)
+        self.cap_main = MyVideoCapture(self.camera_config.rtsp_url_main, 2000)
+        self.cap_main.Open()
+        # self.cap_second = MyVideoCapture(self.camera_config.rtsp_url_second, 2000)
+        self.cap_second = MyVideoCapture(0, 2000)
+        self.cap_second.Open()
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateFrameMain)
+        self.timer.timeout.connect(self.updateFrameSec)
+        self.timer.start(5)
         
         self.setPhotoPath.triggered.connect(lambda: self.configPath())
         self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
@@ -154,7 +156,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         else:
             return
 
-    def savePicture(self, cap: cv2.VideoCapture ):
+    def savePicture(self, cap :MyVideoCapture):
         if cap:
             try:
                 ret, frame = cap.read()
@@ -170,42 +172,42 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             self.appendText('Не удалось сделать снимок. Камера не подключена')
 
     def updateFrameMain(self):
-        ret, frame = self.cap_main.read()
-        if ret:
-            # Convert the frame to a QPixmap for display
-            var = self.main_cam_widget.frameSize()
-            
-            #target_width, target_height = 640, 480  # Задайте нужный размер
-            target_width = var.width()
-            target_height = int(var.width() / 16 * 9)
+        frame = self.cap_main.read()
+        # if frame != None:
+        # Convert the frame to a QPixmap for display
+        var = self.main_cam_widget.frameSize()
+        
+        #target_width, target_height = 640, 480  # Задайте нужный размер
+        target_width = var.width()
+        target_height = int(var.width() / 16 * 9)
 
-            frame = cv2.resize(frame, (target_width, target_height))
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            height, width, channel = frame.shape
-            step = channel * width
+        frame = cv2.resize(frame, (target_width, target_height))
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        height, width, channel = frame.shape
+        step = channel * width
 
-            qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
-            qPix = QPixmap.fromImage(qImg)
-            self.main_cam_widget.setPixmap(qPix)
+        qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
+        qPix = QPixmap.fromImage(qImg)
+        self.main_cam_widget.setPixmap(qPix)
 
     def updateFrameSec(self):
-        ret, frame = self.cap_second.read()
-        if ret:
-            # Convert the frame to a QPixmap for display
-            var = self.second_cam_widget.frameSize()
-            
-            #target_width, target_height = 640, 480  # Задайте нужный размер
-            target_width = var.width()
-            target_height = int(var.width() / 16 * 9)
+        frame = self.cap_second.read()
+        # if frame != None:
+        # Convert the frame to a QPixmap for display
+        var = self.second_cam_widget.frameSize()
+        
+        #target_width, target_height = 640, 480  # Задайте нужный размер
+        target_width = var.width()
+        target_height = int(var.width() / 16 * 9)
 
-            frame = cv2.resize(frame, (target_width, target_height))
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            height, width, channel = frame.shape
-            step = channel * width
+        frame = cv2.resize(frame, (target_width, target_height))
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        height, width, channel = frame.shape
+        step = channel * width
 
-            qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
-            qPix = QPixmap.fromImage(qImg)
-            self.second_cam_widget.setPixmap(qPix)
+        qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
+        qPix = QPixmap.fromImage(qImg)
+        self.second_cam_widget.setPixmap(qPix)
 
     def appendText(self, text):
         now = datetime.now()

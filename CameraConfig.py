@@ -1,5 +1,7 @@
 import json
 
+# "rtsp_url_second": "rtsp://192.168.37.4:554/11",
+
 class CameraConfig:
     def __init__(self, config_file="config.json"):
         self.config_file = config_file
@@ -7,7 +9,7 @@ class CameraConfig:
         # Значения по умолчанию
         self.default_config = {
             "rtsp_url_main": "rtsp://192.168.37.3:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif",
-            "rtsp_url_second": "rtsp://192.168.37.4:554/11",
+            "rtsp_url_second": "rtsp://192.168.37.3:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif",
             "CAMERA_HOST": "192.168.37.3",
             "CAMERA_PORT": 80,
             "CAMERA_USER": "admin",
