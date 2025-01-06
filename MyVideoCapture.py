@@ -3,7 +3,7 @@ import cv2, queue, threading
 
 # bufferless VideoCapture
 class MyVideoCapture:
-  def __init__(self, name):
+  def __init__(self, name, timeout_ms):
     self.isReady = False
     self.cap = None
     self.connStr = name
@@ -12,25 +12,34 @@ class MyVideoCapture:
     self.t = threading.Thread(target=self._reader)
     self.t.daemon = True
     self.t.start()
+    self.timeout = timeout_ms
+  
+  def SetConnStr(self, conn):
+    self.connStr = conn
+
+  def Open(self):
+    if (self.connStr != None):
+      # доработка для открытия встроенных видеокамер
+      if(isinstance(self.connStr, str)) :
+        self.cap = cv2.VideoCapture(
+          self.connStr,
+          apiPreference=cv2.CAP_ANY,
+          params=[cv2.CAP_PROP_READ_TIMEOUT_MSEC, self.timeout, cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, self.timeout],  # 1 second
+        )
+      else:
+        self.cap = cv2.VideoCapture(self.connStr)  
+      # Проверяем, открыта ли камера
+      if not self.cap.isOpened():
+        print("Не удалось открыть видеокамеру")
+        self.isReady = False
+      else:
+        print("Видеокамера открыта успешно")
+        self.isReady = True 
     
-  def Open(self, name):
-    self.connStr = name
-    self.cap = cv2.VideoCapture(
-        self.connStr,
-        apiPreference=cv2.CAP_ANY,
-        params=[cv2.CAP_PROP_READ_TIMEOUT_MSEC, 2000, cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 2000],  # 1 second
-    )
-        # Проверяем, открыта ли камера
-    if not self.cap.isOpened():
-      print("Не удалось открыть видеокамеру")
-      self.isReady = False
-    else:
-      print("Видеокамера открыта успешно")
-      self.isReady = True 
-    
-  def Close(self):
+  def Release(self):
     self.isReady = False
-    self.cap = cv2.VideoCapture.release()
+    self.cap.release()
+    print("End of Release")
 
   # read frames as soon as they are available, keeping only most recent one
   def _reader(self):
@@ -47,8 +56,12 @@ class MyVideoCapture:
               pass
           self.q.put(frame)
       except:
-        print(f"{datetime.now().strftime('%H:%M:%S')} || Failed to connect to camera, exception was thrown")  # wont run
+        current_dateTime = datetime.datetime.now()
+        print(current_dateTime + "Failed to connect to camera, exception was thrown")  # wont run
 
 
   def read(self):
-    return self.q.get()
+    try:
+      return self.q.get()
+    except:
+      return None
