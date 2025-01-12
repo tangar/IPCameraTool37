@@ -574,8 +574,24 @@
           </item>
          </layout>
         </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="connButtonIP">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>IP CONNECT</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
-         <widget class="QPushButton" name="connectButton">
+         <widget class="QPushButton" name="connectButtonONVIF">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -585,18 +601,8 @@
           <property name="text">
            <string>ONVIF CONNECT</string>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="ipConnButton">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>48</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>IP CONNECT</string>
+          <property name="checkable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

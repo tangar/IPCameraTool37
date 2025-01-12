@@ -13,7 +13,7 @@ from PyQt5.QtGui import QImage, QPixmap
 
 from PyQt5.QtWidgets import QApplication, QListWidget, QListWidgetItem, QVBoxLayout, QWidget, QMessageBox
 
-from CameraController import CameraController
+from CameraController import *
 
 import CameraGuiNew
 from CameraConfig import CameraConfig
@@ -42,7 +42,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         # self.find_camera()
         
         self.timer = QTimer(self)
-        self.pingTimer = QTimer(self)
         self.updateFormTimer = QTimer(self)
 
         self.AppConnectors()
@@ -52,18 +51,25 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.PingThread.daemon = True
         self.PingThread.start()
 
-        # self.connect_camera_button_clicked()
-        # self.set_zoom(0)
+        self.ControllerPingThread = None
+        self.ControllerPingThread = threading.Thread(target=self.checkControllerTask)
+        self.ControllerPingThread.daemon = True
+        self.ControllerPingThread.start()
+
+    def checkControllerTask(self):
+        event = threading.Event()
+        while(True):
+            event.wait(1)
+            print("sec passed")
+
 
     def AppConnectors(self):
         self.timer.timeout.connect(self.updateFrame)
         self.timer.start(50)
-        # self.pingTimer.timeout.connect(self.pingTask)
-        # self.pingTimer.start(100)
         self.updateFormTimer.timeout.connect(self.updateForm)
         self.updateFormTimer.start(100)
 
-        self.setPhotoPath.triggered.connect(lambda: self.configPath())
+        self.setPhotoPath.triggered.connect(self.configPath)
         self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
         self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
         self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
@@ -73,8 +79,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.tabWidget.setCurrentIndex(0)
 
-        self.connectButton.clicked.connect(lambda: self.connect_camera_button_clicked())
-        self.ipConnButton.clicked.connect(lambda: self.connect_IP_CAM())
+        self.connectButtonONVIF.clicked.connect(self.connect_ONVIF)
+        self.connButtonIP.clicked.connect(self.connect_IP_CAM)
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
         self.zoomUpButton.clicked.connect(lambda: self.zoomSlider.setValue(self.zoomSlider.value() + self.zoomSlider.singleStep()))
@@ -110,33 +116,45 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.camera_config.SAVE_PATH = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
         self.camera_config.save_config()
 
-    def find_camera(self):
-        try:
-            self.camera = CameraController(self.camera_config.CAMERA_HOST,
-                                           self.camera_config.CAMERA_PORT,
-                                           self.camera_config.CAMERA_USER,
-                                           self.camera_config.CAMERA_PASS)
-        except onvif.exceptions.ONVIFError as e:
-            self.appendText(f"Отсутствует подключение к камере: {str(e)}")
-
     def connect_IP_CAM(self):
         self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 2000)
         self.cap_main.Open()
         self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 2000)
         self.cap_second.Open()
 
-    def connect_camera_button_clicked(self):
-        if self.camera:
-            self.camera.connect()
+        if (self.cap_main.isReady and self.cap_second.isReady):
+            self.connButtonIP.setChecked(True)
+        else:
+            self.connButtonIP.setChecked(False)
+
+    def connect_ONVIF(self):
+        try:
+            camera = CameraController(self.camera_config.CAMERA_HOST,
+                                      self.camera_config.CAMERA_PORT,
+                                      self.camera_config.CAMERA_USER,
+                                      self.camera_config.CAMERA_PASS)
+            camera.connect()
+            self.camera = camera
+            self.connectButtonONVIF.setChecked(self.camera.connected)
+            
+            if (camera.connected):
+                self.camera = camera
+                self.appendText('Камера подключена')
+            else:
+                self.appendText('Камера не найдена. Проверьте подключение')   
+                return
+            
             print(self.camera.zoom_level)
             print(self.camera.focus_level)
             self.zoomSlider.setValue(int(self.camera.zoom_level * 100))
             self.FocusSlider.setValue(int(self.camera.focus_level * 100))
-            self.appendText('Камера подключена')
-        else:
-            self.find_camera()
-        if self.camera is None:
-            self.appendText('Камера не найдена. Проверьте подключение')
+            
+            self.camera.zoom_handler(self.camera.zoom_level)
+            self.camera.focus_handler(self.camera.focus_level)
+            self.camera.focus_mode_auto(True)
+ 
+        except onvif.exceptions.ONVIFError as e:
+            self.appendText(f"Отсутствует подключение к камере: {str(e)}")
 
     def set_zoom(self, value):
         if self.camera and self.camera.connected:
@@ -160,7 +178,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
     def auto_focus(self):
         auto = self.checkBoxAutoFocus.isChecked()
-        self.camera.focus_mode(auto)
+        self.camera.focus_mode_auto(auto)
         if auto:
             self.FocusSlider.setDisabled(True)
             self.focusUpButton.setDisabled(True)

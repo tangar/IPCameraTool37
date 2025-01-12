@@ -70,7 +70,7 @@ class CameraController:
         self.request_abs.Speed.Zoom.x = 1
         self.ptz_service.AbsoluteMove(self.request_abs)
 
-    def focus_mode(self, auto_mode=False):
+    def focus_mode_auto(self, auto_mode=False):
         if auto_mode:
             print("Focus mode set to AUTO")
             self.img_settings.Focus.AutoFocusMode = 'AUTO'
