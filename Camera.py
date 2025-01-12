@@ -40,11 +40,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.secondOnline = False
 
         # self.find_camera()
-
-        self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 2000)
-        self.cap_main.Open()
-        self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 2000)
-        self.cap_second.Open()
         
         self.timer = QTimer(self)
         self.pingTimer = QTimer(self)
@@ -79,6 +74,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.tabWidget.setCurrentIndex(0)
 
         self.connectButton.clicked.connect(lambda: self.connect_camera_button_clicked())
+        self.ipConnButton.clicked.connect(lambda: self.connect_IP_CAM())
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
         self.zoomUpButton.clicked.connect(lambda: self.zoomSlider.setValue(self.zoomSlider.value() + self.zoomSlider.singleStep()))
@@ -122,6 +118,12 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
                                            self.camera_config.CAMERA_PASS)
         except onvif.exceptions.ONVIFError as e:
             self.appendText(f"Отсутствует подключение к камере: {str(e)}")
+
+    def connect_IP_CAM(self):
+        self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 2000)
+        self.cap_main.Open()
+        self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 2000)
+        self.cap_second.Open()
 
     def connect_camera_button_clicked(self):
         if self.camera:
@@ -209,6 +211,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         # Здесь хорошо бы проверить на то, что успешно смогли считать кадр
         try:
+            if (cap == None):
+                return
+
             frame = cap.read()
             
             var = widget.frameSize()
