@@ -57,6 +57,13 @@ class Endoscope:
         else:
             print(f"Получено сообщение: {id} длиной {rxLen} от {addr}.")
             print("сообщение не обработано")
+
+    def prepBotLight(pwm, freq):
+        b0 = Commands.CMD_SET_BOTTOM_LIGHT_BRIGHTNESS.value
+        b1 = pwm % 256
+        b2 = freq % 256
+        b3 = freq // 256
+        return b0,b1,b2,b3
         
         
         

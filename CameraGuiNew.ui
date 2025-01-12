@@ -332,7 +332,7 @@
          </spacer>
         </item>
         <item row="11" column="2">
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="pbLightDown">
           <property name="maximumSize">
            <size>
             <width>16777215</width>

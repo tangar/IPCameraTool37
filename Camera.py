@@ -106,8 +106,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
         self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
         self.tabWidget.currentChanged.connect(self.on_tab_changed)
-        self.lightBotPwm.valueChanged.connect(lambda: self.show_message(self.lightBotPwm.value()))
-        self.lightSidePwm.valueChanged.connect(lambda: self.show_message(self.lightSidePwm.value()))
 
         self.tabWidget.setCurrentIndex(0)
 
@@ -125,7 +123,15 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.checkBoxAutoFocus.clicked.connect(lambda: self.auto_focus())
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
+        self.pbLightDown.clicked.connect(self.setDownLight)
 
+
+    def setDownLight(self):
+        cmd_pwm = self.lightBotPwm.value()
+        cmd_freq = 1000
+
+        b0, b1, b2, b3 = Endoscope.prepBotLight(cmd_pwm, cmd_freq)
+        self.txSocket.Send(bytes([b0, b1, b2, b3]))
 
     def updateValue(self, value): 
         print(f"new value is {value}")
