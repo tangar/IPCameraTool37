@@ -1,29 +1,25 @@
 from datetime import datetime
-
-# возможное решение проблемы с видео
-# https://stackoverflow.com/questions/43665208/how-to-get-the-latest-frame-from-capture-device-camera-in-opencv
+import threading
 
 from MyVideoCapture import MyVideoCapture
 
 import cv2
 from PyQt5 import QtWidgets
-import sys
 from typing import Optional
 
 import onvif
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 
-import sys
 from PyQt5.QtWidgets import QApplication, QListWidget, QListWidgetItem, QVBoxLayout, QWidget, QMessageBox
-from PyQt5.QtGui import QImageReader, QPixmap
 
 from CameraController import CameraController
 
-# import MainWindow
 import CameraGuiNew
-import CameraConfig
+from CameraConfig import CameraConfig
 import ImageViewer as Viewer
+
+from MyPinger import *
 
 class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def __init__(self):
@@ -33,13 +29,55 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.camera: Optional[CameraController] = None
         self.cap_main = None
         self.cap_second = None
-
         self.viewer = Viewer.ImageFileViewer()
 
-        self.camera_config = CameraConfig.CameraConfig(config_file="config.json")
+        self.camera_config = CameraConfig(config_file="config.json")
         self.camera_config.load_config()
         self.camera_config.save_config()
+
+        self.controllerOnline = False
+        self.mainOnline = False
+        self.secondOnline = False
+
         # self.find_camera()
+
+        self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 2000)
+        self.cap_main.Open()
+        self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 2000)
+        self.cap_second.Open()
+        
+        self.timer = QTimer(self)
+        self.pingTimer = QTimer(self)
+        self.updateFormTimer = QTimer(self)
+
+        self.AppConnectors()
+
+        self.PingThread = None
+        self.PingThread = threading.Thread(target=self.pingTask)
+        self.PingThread.daemon = True
+        self.PingThread.start()
+
+        # self.connect_camera_button_clicked()
+        # self.set_zoom(0)
+
+    def AppConnectors(self):
+        self.timer.timeout.connect(self.updateFrame)
+        self.timer.start(50)
+        # self.pingTimer.timeout.connect(self.pingTask)
+        # self.pingTimer.start(100)
+        self.updateFormTimer.timeout.connect(self.updateForm)
+        self.updateFormTimer.start(100)
+
+        self.setPhotoPath.triggered.connect(lambda: self.configPath())
+        self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
+        self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
+        self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
+        self.tabWidget.currentChanged.connect(self.on_tab_changed)
+        self.lightBotPwm.valueChanged.connect(lambda: self.show_message(self.lightBotPwm.value()))
+        self.lightSidePwm.valueChanged.connect(lambda: self.show_message(self.lightSidePwm.value()))
+
+        self.tabWidget.setCurrentIndex(0)
+
         self.connectButton.clicked.connect(lambda: self.connect_camera_button_clicked())
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
@@ -51,34 +89,18 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.focusDownButton.clicked.connect(lambda: self.FocusSlider.setValue(self.FocusSlider.value() - self.FocusSlider.singleStep()))
 
         self.checkBoxAutoFocus.clicked.connect(lambda: self.auto_focus())
-
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
-        self.cap_main = MyVideoCapture(self.camera_config.rtsp_url_main, 2000)
-        self.cap_main.Open()
-        # self.cap_second = MyVideoCapture(self.camera_config.rtsp_url_second, 2000)
-        self.cap_second = MyVideoCapture(0, 2000)
-        self.cap_second.Open()
-        
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.updateFrameMain)
-        self.timer.timeout.connect(self.updateFrameSec)
-        self.timer.start(5)
-        
-        self.setPhotoPath.triggered.connect(lambda: self.configPath())
-        self.saveSettings.triggered.connect(lambda: self.camera_config.save_config())
-        self.loadSettings.triggered.connect(lambda: self.camera_config.load_config())
-
-        self.loggerList.itemDoubleClicked.connect(self.viewer.on_item_double_clicked)
-
-        self.tabWidget.currentChanged.connect(self.on_tab_changed)
-
-        self.lightBotPwm.valueChanged.connect(lambda: self.show_message(self.lightBotPwm.value()))
-        self.lightSidePwm.valueChanged.connect(lambda: self.show_message(self.lightSidePwm.value()))
-
-        self.tabWidget.setCurrentIndex(0)
-        # self.connect_camera_button_clicked()
-        # self.set_zoom(0)
+    def pingTask(self):
+        while True:
+            self.controllerOnline = MyPinger.ping(self.camera_config.controller_ip, 1,50) == 0
+            self.mainOnline = MyPinger.ping(self.camera_config.main_ip, 1,50) == 0
+            self.secondOnline = MyPinger.ping(self.camera_config.second_ip, 1,50) == 0
+    
+    def updateForm(self):
+        self.isOnlineControllerCB.setChecked(self.controllerOnline)
+        self.isOnlineMainCB.setChecked(self.mainOnline)
+        self.isOnlineSecondCB.setChecked(self.secondOnline)
 
     def on_tab_changed(self, index):
         if (index == 0):
@@ -157,57 +179,52 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             return
 
     def savePicture(self, cap :MyVideoCapture):
-        if cap:
+        if cap.isReady:
             try:
-                ret, frame = cap.read()
+                frame = cap.read()
                 stamp = datetime.now()
                 datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
                 full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
                 cv2.imwrite(full_file_name, frame)
                 self.appendText(full_file_name)
-
             except Exception:
                 self.appendText(f'Не удалось сделать снимок. {Exception}')
         else:
             self.appendText('Не удалось сделать снимок. Камера не подключена')
 
-    def updateFrameMain(self):
-        frame = self.cap_main.read()
-        # if frame != None:
-        # Convert the frame to a QPixmap for display
-        var = self.main_cam_widget.frameSize()
-        
-        #target_width, target_height = 640, 480  # Задайте нужный размер
-        target_width = var.width()
-        target_height = int(var.width() / 16 * 9)
+    
+    def updateFrame(self):
+        cap = None
+        widget = None
+        # определим с какой камерой работаем
+        id = self.tabWidget.currentIndex()
+        if id == 0:
+            cap = self.cap_main
+            widget = self.main_cam_widget
+        elif id == 1:
+            cap = self.cap_second
+            widget = self.second_cam_widget
+        else:
+            return
 
-        frame = cv2.resize(frame, (target_width, target_height))
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        height, width, channel = frame.shape
-        step = channel * width
+        # Здесь хорошо бы проверить на то, что успешно смогли считать кадр
+        try:
+            frame = cap.read()
+            
+            var = widget.frameSize()
+            target_width = var.width()
+            target_height = int(var.width() / 16 * 9)
 
-        qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
-        qPix = QPixmap.fromImage(qImg)
-        self.main_cam_widget.setPixmap(qPix)
+            frame = cv2.resize(frame, (target_width, target_height))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            height, width, channel = frame.shape
+            step = channel * width
 
-    def updateFrameSec(self):
-        frame = self.cap_second.read()
-        # if frame != None:
-        # Convert the frame to a QPixmap for display
-        var = self.second_cam_widget.frameSize()
-        
-        #target_width, target_height = 640, 480  # Задайте нужный размер
-        target_width = var.width()
-        target_height = int(var.width() / 16 * 9)
-
-        frame = cv2.resize(frame, (target_width, target_height))
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        height, width, channel = frame.shape
-        step = channel * width
-
-        qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
-        qPix = QPixmap.fromImage(qImg)
-        self.second_cam_widget.setPixmap(qPix)
+            qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
+            qPix = QPixmap.fromImage(qImg)
+            widget.setPixmap(qPix)
+        except:
+            print ("Eror get frame")
 
     def appendText(self, text):
         now = datetime.now()
@@ -220,15 +237,3 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         print(txt)
         self.lightBotPwmLabel.setText(str(self.lightBotPwm.value()))
         self.lightSidePwmLabel.setText(str(self.lightSidePwm.value()))
-
-
-def main():
-    app = QtWidgets.QApplication(sys.argv)
-    window = App()
-    window.setWindowTitle("Управление эндоскопом Э-37")
-    window.show()
-    app.exec_()
-
-
-if __name__ == '__main__':
-    main()
