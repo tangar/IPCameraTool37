@@ -31,7 +31,9 @@ class RxSocket:
             return self.Rxsocket.recvfrom(4096)
         
     def _reader(self):
+        event = threading.Event()
         while True:
+            event.wait(0.01)
             try:
                 if (self.isReady):
                     data, address = self.recvfrom(4096)

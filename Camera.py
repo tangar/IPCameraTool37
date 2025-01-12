@@ -23,7 +23,6 @@ from MyPinger import *
 from MySocket import *
 from endoscope import *
 
-
 class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -41,10 +40,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.controllerOnline = False
         self.mainOnline = False
         self.secondOnline = False
+        
         self.eds = None
         self.txSocket = None
         self.rxSocket = None
         
+        self.eds = Endoscope()
+
         self.timer = QTimer(self)
         self.updateFormTimer = QTimer(self)
 
@@ -59,6 +61,10 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.ControllerPingThread = threading.Thread(target=self.checkControllerTask)
         self.ControllerPingThread.daemon = True
         self.ControllerPingThread.start()
+
+        self.rxSocket = RxSocket(callback=self.eds.MessageProcessor)  
+        self.rxSocket.Open('', self.camera_config.controller_port_rx)
+
 
     def checkControllerTask(self):
         event = threading.Event()
