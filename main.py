@@ -1,6 +1,3 @@
-# возможное решение проблемы с видео
-# https://stackoverflow.com/questions/43665208/how-to-get-the-latest-frame-from-capture-device-camera-in-opencv
-
 from PyQt5 import QtWidgets
 import sys
 from Camera import App

@@ -20,6 +20,9 @@ from CameraConfig import CameraConfig
 import ImageViewer as Viewer
 
 from MyPinger import *
+from MySocket import *
+from endoscope import *
+
 
 class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def __init__(self):
@@ -38,8 +41,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.controllerOnline = False
         self.mainOnline = False
         self.secondOnline = False
-
-        # self.find_camera()
+        self.eds = None
+        self.txSocket = None
+        self.rxSocket = None
         
         self.timer = QTimer(self)
         self.updateFormTimer = QTimer(self)
@@ -62,6 +66,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             event.wait(1)
             print("sec passed")
 
+    def pingTask(self):
+        event = threading.Event()
+        while True:
+            event.wait(1)
+            self.controllerOnline = MyPinger.ping(self.camera_config.controller_ip, 1,50) == 0
+            self.mainOnline = MyPinger.ping(self.camera_config.main_ip, 1,50) == 0
+            self.secondOnline = MyPinger.ping(self.camera_config.second_ip, 1,50) == 0
 
     def AppConnectors(self):
         self.timer.timeout.connect(self.updateFrame)
@@ -93,11 +104,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.checkBoxAutoFocus.clicked.connect(lambda: self.auto_focus())
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
-    def pingTask(self):
-        while True:
-            self.controllerOnline = MyPinger.ping(self.camera_config.controller_ip, 1,50) == 0
-            self.mainOnline = MyPinger.ping(self.camera_config.main_ip, 1,50) == 0
-            self.secondOnline = MyPinger.ping(self.camera_config.second_ip, 1,50) == 0
     
     def updateForm(self):
         self.isOnlineControllerCB.setChecked(self.controllerOnline)
@@ -250,9 +256,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             print ("Eror get frame")
 
     def appendText(self, text):
-        now = datetime.now()
-        formatted_time = now.strftime("%Y-%m-%d %H-%M-%S")
-        text2 = formatted_time + ' ' + text
+        now = datetime.datetime.now()
+        time_string = now.strftime("%Y-%m-%d %H:%M:%S")
+        text2 = time_string + ' ' + text
         self.loggerList.insertItem(0, QListWidgetItem(text))
 
     def show_message(self, value):
