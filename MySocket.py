@@ -45,7 +45,7 @@ class RxSocket:
                 current_dateTime = datetime.datetime.now()
                 print(f"Failed, exception was thrown")
 
-class txSocket:
+class TxSocket:
     def __init__(self, name = '', port = 9999):
         self.Name = name
         self.Port = port

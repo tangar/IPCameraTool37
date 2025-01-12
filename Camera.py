@@ -62,15 +62,30 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.ControllerPingThread.daemon = True
         self.ControllerPingThread.start()
 
+        self.ControllerHandlerThread = None
+        self.ControllerHandlerThread = threading.Thread(target=self.controllerHandlerTask)
+        self.ControllerHandlerThread.daemon = True
+        self.ControllerHandlerThread.start()
+
         self.rxSocket = RxSocket(callback=self.eds.MessageProcessor)  
         self.rxSocket.Open('', self.camera_config.controller_port_rx)
 
+        self.txSocket = TxSocket()
+        self.txSocket.Open(self.camera_config.controller_ip, self.camera_config.controller_port_tx)
 
     def checkControllerTask(self):
         event = threading.Event()
         while(True):
             event.wait(1)
-            print("sec passed")
+            print("Send ping packet to board")
+            self.txSocket.Send(bytes([Commands.CMD_PING.value]))
+
+    def controllerHandlerTask(self):
+        event = threading.Event()
+        while(True):
+            event.wait(0.1)
+            print("Send status request from board")
+            self.txSocket.Send(bytes([Commands.CMD_GET_STATUS.value]))
 
     def pingTask(self):
         event = threading.Event()
