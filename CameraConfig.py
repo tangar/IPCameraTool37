@@ -23,8 +23,8 @@ class CameraConfig:
 
         self.default_config = {
             "controller_ip": "192.168.37.2",
-            "controller_port_tx": "9999",
-            "controller_port_rx": "9998",
+            "controller_port_tx": 9999,
+            "controller_port_rx": 9998,
             "main_ip": "192.168.37.3",
             "second_ip": "192.168.37.4",
             "main_rtsp_url": "rtsp://192.168.37.3:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif",
