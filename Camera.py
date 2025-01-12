@@ -83,7 +83,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
     def controllerHandlerTask(self):
         event = threading.Event()
         while(True):
-            event.wait(0.1)
+            event.wait(0.5)
             print("Send status request from board")
             self.txSocket.Send(bytes([Commands.CMD_GET_STATUS.value]))
 
@@ -125,11 +125,17 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.checkBoxAutoFocus.clicked.connect(lambda: self.auto_focus())
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
+
+
+    def updateValue(self, value): 
+        print(f"new value is {value}")
     
     def updateForm(self):
         self.isOnlineControllerCB.setChecked(self.controllerOnline)
         self.isOnlineMainCB.setChecked(self.mainOnline)
         self.isOnlineSecondCB.setChecked(self.secondOnline)
+        str = f"UC is {self.eds.TemperatureUC} deg. Light is {self.eds.TemperatureSide} deg."
+        self.statusBar().showMessage(str)
 
     def on_tab_changed(self, index):
         if (index == 0):
