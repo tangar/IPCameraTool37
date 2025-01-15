@@ -28,7 +28,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.camera: Optional[CameraController] = None
+        self.camONVIFSide: Optional[CameraController] = None
+        self.camONVIFBott: Optional[CameraController] = None
         self.cap_main = None
         self.cap_second = None
         self.viewer = Viewer.ImageFileViewer()
@@ -166,30 +167,44 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             if(self.cap_second.isReady):
                 self.appendText("Осевая камера подключена")
         
-            camera = CameraController(self.camera_config.CAMERA_HOST,
+            cameraONVIFSide = CameraController(self.camera_config.CAMERA_HOST,
                                       self.camera_config.CAMERA_PORT,
                                       self.camera_config.CAMERA_USER,
                                       self.camera_config.CAMERA_PASS)
-            camera.connect()
-            self.camera = camera
+            cameraONVIFSide.connect()
             
-            if (camera.connected):
-                self.camera = camera
-                self.appendText('Камера подключена по ONVIF')
+            if (cameraONVIFSide.connected):
+                self.camONVIFSide = cameraONVIFSide
+                self.zoomSlider.setValue(int(self.camONVIFSide.zoom_level * 100))
+                self.FocusSlider.setValue(int(self.camONVIFSide.focus_level * 100))
+                self.camONVIFSide.zoom_handler(self.camONVIFSide.zoom_level)
+                self.camONVIFSide.focus_handler(self.camONVIFSide.focus_level)
+                self.camONVIFSide.focus_mode_auto(True)
+                self.appendText('Боковая камера подключена по ONVIF')
             else:
-                self.appendText('Камера не найдена. Проверьте подключение')   
-                return
+                self.appendText('Боковая камера не подключена по ONVIF. Проверьте подключение')   
             
-            print(self.camera.zoom_level)
-            print(self.camera.focus_level)
-            self.zoomSlider.setValue(int(self.camera.zoom_level * 100))
-            self.FocusSlider.setValue(int(self.camera.focus_level * 100))
+            cameraONVIFBott = CameraController(self.camera_config.second_ip,
+                                      8080,
+                                      self.camera_config.CAMERA_USER,
+                                      self.camera_config.CAMERA_PASS)
+            cameraONVIFBott.connect()
+
+            if (cameraONVIFBott.connected):
+                self.camONVIFBott = cameraONVIFBott
+                self.appendText('Осевая камера подключена по ONVIF')
+            else:
+                self.appendText('Осевая камера не подключена по ONVIF. Проверьте подключение')   
             
-            self.camera.zoom_handler(self.camera.zoom_level)
-            self.camera.focus_handler(self.camera.focus_level)
-            self.camera.focus_mode_auto(True)
- 
-            if (self.cap_main.isReady and self.cap_second.isReady and self.camera.connected):
+            self.zoomSlider.setEnabled(self.camONVIFSide.connected)
+            self.zoomUpButton.setEnabled(self.camONVIFSide.connected)
+            self.zoomDownButton.setEnabled(self.camONVIFSide.connected)
+            self.FocusSlider.setEnabled(self.camONVIFSide.connected)
+            self.focusUpButton.setEnabled(self.camONVIFSide.connected)
+            self.focusDownButton.setEnabled(self.camONVIFSide.connected)
+            self.checkBoxAutoFocus.setEnabled(self.camONVIFSide.connected)
+
+            if (self.cap_main.isReady and self.cap_second.isReady):
                 self.appendText('Подключение выпонено')
                 self.connButtonIP.setChecked(True)
             else:
@@ -200,28 +215,28 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             self.appendText(f"Ошибка подключения к камере: {str(e)}")
 
     def set_zoom(self, value):
-        if self.camera and self.camera.connected:
+        if self.camONVIFSide and self.camONVIFSide.connected:
             pos = value / 100
-            self.camera.zoom_handler(pos)
+            self.camONVIFSide.zoom_handler(pos)
             self.zoomSlider.setValue(value)
-            self.appendText(f'Зум установлен в позицию {self.camera.zoom_level}')
+            self.appendText(f'Зум установлен в позицию {self.camONVIFSide.zoom_level}')
         else:
             self.appendText('Подключение к камере отсутствует')
 
     def set_focus(self, value):
-        if self.camera.connected:
+        if self.camONVIFSide.connected:
             pos = value / 100
-            print(self.camera.focus_level)
-            self.camera.focus_handler(pos)
-            print(self.camera.focus_level)
+            print(self.camONVIFSide.focus_level)
+            self.camONVIFSide.focus_handler(pos)
+            print(self.camONVIFSide.focus_level)
             self.FocusSlider.setValue(value)
-            self.appendText(f'Фокус установлен в позицию {self.camera.focus_level}')
+            self.appendText(f'Фокус установлен в позицию {self.camONVIFSide.focus_level}')
         else:
             self.appendText('Подключение к камере отсутствует')
 
     def auto_focus(self):
         auto = self.checkBoxAutoFocus.isChecked()
-        self.camera.focus_mode_auto(auto)
+        self.camONVIFSide.focus_mode_auto(auto)
         if auto:
             self.FocusSlider.setDisabled(True)
             self.focusUpButton.setDisabled(True)
