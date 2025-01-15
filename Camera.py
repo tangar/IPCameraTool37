@@ -1,5 +1,6 @@
 from datetime import datetime
 import threading
+import traceback
 
 from MyVideoCapture import MyVideoCapture
 
@@ -93,8 +94,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         while True:
             event.wait(1)
             self.controllerOnline = MyPinger.ping(self.camera_config.controller_ip, 1,50) == 0
-            self.mainOnline = MyPinger.ping(self.camera_config.main_ip, 1,50) == 0
-            self.secondOnline = MyPinger.ping(self.camera_config.second_ip, 1,50) == 0
+            self.mainOnline = MyPinger.ping(self.camera_config.CAMERA_SIDE_HOST, 1,50) == 0
+            self.secondOnline = MyPinger.ping(self.camera_config.CAMERA_DN_HOST, 1,50) == 0
 
     def AppConnectors(self):
         self.timer.timeout.connect(self.updateFrame)
@@ -124,6 +125,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
         self.pbLightDown.clicked.connect(self.setDownLight)
+        self.commentClearBTN.clicked.connect(lambda: self.commentBox.setText(""))
 
 
     def setDownLight(self):
@@ -167,10 +169,10 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             if(self.cap_second.isReady):
                 self.appendText("Осевая камера подключена")
         
-            cameraONVIFSide = CameraController(self.camera_config.CAMERA_HOST,
-                                      self.camera_config.CAMERA_PORT,
-                                      self.camera_config.CAMERA_USER,
-                                      self.camera_config.CAMERA_PASS)
+            cameraONVIFSide = CameraController(self.camera_config.CAMERA_SIDE_HOST,
+                                      self.camera_config.CAMERA_SIDE_ONVIFPORT,
+                                      self.camera_config.CAMERA_SIDE_USER,
+                                      self.camera_config.CAMERA_SIDE_PASS)
             cameraONVIFSide.connect()
             
             if (cameraONVIFSide.connected):
@@ -184,10 +186,10 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             else:
                 self.appendText('Боковая камера не подключена по ONVIF. Проверьте подключение')   
             
-            cameraONVIFBott = CameraController(self.camera_config.second_ip,
-                                      8080,
-                                      self.camera_config.CAMERA_USER,
-                                      self.camera_config.CAMERA_PASS)
+            cameraONVIFBott = CameraController(self.camera_config.CAMERA_DN_HOST,
+                                      self.camera_config.CAMERA_DN_ONVIFPORT,
+                                      self.camera_config.CAMERA_DN_USER,
+                                      self.camera_config.CAMERA_DN_PASS)
             cameraONVIFBott.connect()
 
             if (cameraONVIFBott.connected):
@@ -211,8 +213,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
                 self.appendText('Подключение не выполнено')
                 self.connButtonIP.setChecked(False)
         
-        except onvif.exceptions.ONVIFError as e:
-            self.appendText(f"Ошибка подключения к камере: {str(e)}")
+        except Exception as e:
+                self.MyExcHandler(e) 
 
     def set_zoom(self, value):
         if self.camONVIFSide and self.camONVIFSide.connected:
@@ -257,20 +259,33 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             return
 
     def savePicture(self, cap :MyVideoCapture):
-        if cap.isReady:
-            try:
+        try:
+            if cap.isReady:
                 frame = cap.read()
                 stamp = datetime.datetime.now()
                 datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
-                full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
+                prefix = self.prefixBox.text()
+                commment = self.commentBox.text()
+                
+                full_file_name = self.camera_config.SAVE_PATH + '/'
+                
+                if (prefix != ""): full_file_name += prefix + " "
+                full_file_name += datetime_str + " "    
+                if (commment != ""): full_file_name += commment + " "
+                full_file_name += "Frame.jpg"
+
                 cv2.imwrite(full_file_name, frame)
                 self.appendText(full_file_name)
-            except Exception:
-                self.appendText(f'Не удалось сделать снимок. {Exception}')
-        else:
-            self.appendText('Не удалось сделать снимок. Камера не подключена')
+            else:
+                self.appendText('Не удалось сделать снимок. Камера не подключена')
+        except Exception as e:
+                self.MyExcHandler(e) 
 
-    
+    def MyExcHandler(self, e):
+        stack_trace = traceback.format_exc()
+        self.appendText(f'Исключение. {str(e)}.')    
+        self.appendText(f'Стек вызовов. {stack_trace}')   
+
     def updateFrame(self):
         cap = None
         widget = None
@@ -290,6 +305,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             if (cap == None):
                 return
 
+            if (cap.isReady == False):
+                return
+
             frame = cap.read()
             
             var = widget.frameSize()
@@ -304,8 +322,8 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             qImg = QImage(frame.data, frame.shape[1], frame.shape[0], step, QImage.Format_RGB888)
             qPix = QPixmap.fromImage(qImg)
             widget.setPixmap(qPix)
-        except:
-            print ("Eror get frame")
+        except Exception as e:
+                self.MyExcHandler(e) 
 
     def appendText(self, text):
         now = datetime.datetime.now()
