@@ -109,7 +109,6 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.tabWidget.setCurrentIndex(0)
 
-        self.connectButtonONVIF.clicked.connect(self.connect_ONVIF)
         self.connButtonIP.clicked.connect(self.connect_IP_CAM)
 
         self.zoomSlider.valueChanged.connect(lambda: self.set_zoom(self.zoomSlider.value()))
@@ -156,29 +155,27 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.camera_config.save_config()
 
     def connect_IP_CAM(self):
-        self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 2000)
-        self.cap_main.Open()
-        self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 2000)
-        self.cap_second.Open()
-
-        if (self.cap_main.isReady and self.cap_second.isReady):
-            self.connButtonIP.setChecked(True)
-        else:
-            self.connButtonIP.setChecked(False)
-
-    def connect_ONVIF(self):
         try:
+            self.cap_main = MyVideoCapture(self.camera_config.main_rtsp_url, 5000)
+            self.cap_main.Open()
+            if(self.cap_main.isReady):
+                self.appendText("Боковая камера подключена")
+
+            self.cap_second = MyVideoCapture(self.camera_config.second_rtsp_url, 5000)
+            self.cap_second.Open()
+            if(self.cap_second.isReady):
+                self.appendText("Осевая камера подключена")
+        
             camera = CameraController(self.camera_config.CAMERA_HOST,
                                       self.camera_config.CAMERA_PORT,
                                       self.camera_config.CAMERA_USER,
                                       self.camera_config.CAMERA_PASS)
             camera.connect()
             self.camera = camera
-            self.connectButtonONVIF.setChecked(self.camera.connected)
             
             if (camera.connected):
                 self.camera = camera
-                self.appendText('Камера подключена')
+                self.appendText('Камера подключена по ONVIF')
             else:
                 self.appendText('Камера не найдена. Проверьте подключение')   
                 return
@@ -192,8 +189,15 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             self.camera.focus_handler(self.camera.focus_level)
             self.camera.focus_mode_auto(True)
  
+            if (self.cap_main.isReady and self.cap_second.isReady and self.camera.connected):
+                self.appendText('Подключение выпонено')
+                self.connButtonIP.setChecked(True)
+            else:
+                self.appendText('Подключение не выполнено')
+                self.connButtonIP.setChecked(False)
+        
         except onvif.exceptions.ONVIFError as e:
-            self.appendText(f"Отсутствует подключение к камере: {str(e)}")
+            self.appendText(f"Ошибка подключения к камере: {str(e)}")
 
     def set_zoom(self, value):
         if self.camera and self.camera.connected:
@@ -205,7 +209,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             self.appendText('Подключение к камере отсутствует')
 
     def set_focus(self, value):
-        if self.camera and self.camera.connected:
+        if self.camera.connected:
             pos = value / 100
             print(self.camera.focus_level)
             self.camera.focus_handler(pos)
@@ -241,7 +245,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         if cap.isReady:
             try:
                 frame = cap.read()
-                stamp = datetime.now()
+                stamp = datetime.datetime.now()
                 datetime_str = stamp.strftime("%Y-%m-%d_%H-%M-%S")
                 full_file_name = "{} Frame.jpg".format(self.camera_config.SAVE_PATH + '/' + datetime_str)
                 cv2.imwrite(full_file_name, frame)
