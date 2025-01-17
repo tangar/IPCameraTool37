@@ -85,245 +85,6 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
-        <item row="3" column="1">
-         <widget class="QPushButton" name="zoomDownButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>31</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-</string>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QSlider" name="zoomSlider">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="tracking">
-           <bool>false</bool>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="17" column="0">
-         <spacer name="verticalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="22" column="0" colspan="3">
-         <widget class="QLineEdit" name="prefixBox"/>
-        </item>
-        <item row="7" column="0" colspan="3">
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>39</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="5" column="1">
-         <widget class="QPushButton" name="focusDownButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>31</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="13" column="1" colspan="2">
-         <widget class="QPushButton" name="pushButton_3">
-          <property name="text">
-           <string>Подсветка боковая</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="20" column="2">
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>64</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>32</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="9" column="0" colspan="3">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="18" column="0">
-         <widget class="QSpinBox" name="motCurrPwm">
-          <property name="wrapping">
-           <bool>false</bool>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::PlusMinus</enum>
-          </property>
-          <property name="maximum">
-           <number>255</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="zoomUpButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>31</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>+</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>0</width>
-            <height>39</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="5" column="2">
-         <widget class="QPushButton" name="focusUpButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>31</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>+</string>
-          </property>
-         </widget>
-        </item>
-        <item row="13" column="0">
-         <widget class="QSpinBox" name="lightSidePwm">
-          <property name="wrapping">
-           <bool>false</bool>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::PlusMinus</enum>
-          </property>
-          <property name="maximum">
-           <number>255</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="15" column="0" colspan="2">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Двигатель</string>
-          </property>
-         </widget>
-        </item>
         <item row="8" column="0" colspan="3">
          <widget class="QPushButton" name="shotButton">
           <property name="minimumSize">
@@ -334,90 +95,6 @@
           </property>
           <property name="text">
            <string>Сделать снимок</string>
-          </property>
-         </widget>
-        </item>
-        <item row="20" column="1">
-         <widget class="QPushButton" name="motLeft">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>64</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>32</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="27" column="0">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="6" column="1" colspan="2">
-         <widget class="QCheckBox" name="checkBoxAutoFocus">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Auto</string>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="0" colspan="2">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Освещение</string>
-          </property>
-         </widget>
-        </item>
-        <item row="23" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Комментарий</string>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="0">
-         <widget class="QSpinBox" name="lightBotPwm">
-          <property name="wrapping">
-           <bool>false</bool>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::PlusMinus</enum>
-          </property>
-          <property name="maximum">
-           <number>255</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
           </property>
          </widget>
         </item>
@@ -442,12 +119,12 @@
            </size>
           </property>
           <property name="text">
-           <string>Очистить</string>
+           <string>Очистить комментарий</string>
           </property>
          </widget>
         </item>
-        <item row="20" column="0">
-         <spacer name="verticalSpacer_8">
+        <item row="17" column="0">
+         <spacer name="verticalSpacer_7">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -462,133 +139,8 @@
           </property>
          </spacer>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QPushButton" name="connButtonIP">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>48</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Подключение к камерам</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="18" column="2">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Ток</string>
-          </property>
-         </widget>
-        </item>
-        <item row="14" column="0" colspan="2">
-         <spacer name="verticalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="11" column="1" colspan="2">
-         <widget class="QPushButton" name="pbLightDown">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Подсветка осевая</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QSlider" name="FocusSlider">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="tracking">
-           <bool>false</bool>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="16" column="2">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>ШИМ</string>
-          </property>
-         </widget>
-        </item>
-        <item row="16" column="0">
-         <widget class="QSpinBox" name="motDriverPwm">
-          <property name="wrapping">
-           <bool>false</bool>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::PlusMinus</enum>
-          </property>
-          <property name="maximum">
-           <number>255</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="24" column="0" colspan="3">
-         <widget class="QLineEdit" name="commentBox"/>
-        </item>
-        <item row="19" column="1" colspan="2">
-         <widget class="QLabel" name="label_4">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>0</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Поворот</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+        <item row="22" column="0" colspan="3">
+         <widget class="QLineEdit" name="prefixBox"/>
         </item>
         <item row="12" column="0" colspan="3">
          <spacer name="verticalSpacer_5">
@@ -606,19 +158,16 @@
           </property>
          </spacer>
         </item>
-        <item row="4" column="0" colspan="3">
-         <widget class="QLabel" name="labelFocus">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16</height>
-           </size>
+        <item row="3" column="0">
+         <widget class="QSlider" name="zoomSlider">
+          <property name="enabled">
+           <bool>false</bool>
           </property>
-          <property name="text">
-           <string>Положение фокуса</string>
+          <property name="tracking">
+           <bool>false</bool>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -656,6 +205,292 @@
           </item>
          </layout>
         </item>
+        <item row="6" column="1" colspan="2">
+         <widget class="QCheckBox" name="checkBoxAutoFocus">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="focusUpButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="0" colspan="2">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Освещение</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="1" colspan="2">
+         <widget class="QPushButton" name="pbLightSide">
+          <property name="text">
+           <string>Подсветка боковая</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0" colspan="3">
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>39</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="19" column="1" colspan="2">
+         <widget class="QLabel" name="label_4">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Поворот</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="20" column="2">
+         <widget class="QPushButton" name="motRight">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>64</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>32</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="24" column="0" colspan="3">
+         <widget class="QLineEdit" name="commentBox"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="focusDownButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="28" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="20" column="1">
+         <widget class="QPushButton" name="motLeft">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>64</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>32</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="18" column="0">
+         <widget class="QSpinBox" name="motCurrPwm">
+          <property name="wrapping">
+           <bool>false</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::PlusMinus</enum>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="3">
+         <widget class="QLabel" name="labelFocus">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Положение фокуса</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0" colspan="3">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="zoomDownButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QSpinBox" name="lightBotPwm">
+          <property name="wrapping">
+           <bool>false</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::PlusMinus</enum>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>39</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="2" column="0" colspan="3">
          <widget class="QLabel" name="labelZoom">
           <property name="maximumSize">
@@ -672,12 +507,190 @@
           </property>
          </widget>
         </item>
+        <item row="18" column="2">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Ток</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QPushButton" name="connButtonIP">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>48</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Подключение к камерам</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="23" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Комментарий</string>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="0" colspan="2">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Двигатель</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="zoomUpButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>31</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
         <item row="21" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
            <string>Префикс</string>
           </property>
          </widget>
+        </item>
+        <item row="14" column="0" colspan="2">
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="16" column="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>ШИМ</string>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
+         <widget class="QSpinBox" name="lightSidePwm">
+          <property name="wrapping">
+           <bool>false</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::PlusMinus</enum>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1" colspan="2">
+         <widget class="QPushButton" name="pbLightDown">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Подсветка осевая</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="20" column="0">
+         <spacer name="verticalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="0">
+         <widget class="QSlider" name="FocusSlider">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="tracking">
+           <bool>false</bool>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="0">
+         <widget class="QSpinBox" name="motDriverPwm">
+          <property name="wrapping">
+           <bool>false</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::PlusMinus</enum>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="26" column="0">
+         <spacer name="verticalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>

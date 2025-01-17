@@ -64,6 +64,13 @@ class Endoscope:
         b2 = freq % 256
         b3 = freq // 256
         return b0,b1,b2,b3
+
+    def prepSideLight(pwm, freq):
+        b0 = Commands.CMD_SET_SIDE_LIGHT_BRIGHTNESS.value
+        b1 = pwm % 256
+        b2 = freq % 256
+        b3 = freq // 256
+        return b0,b1,b2,b3
         
         
         

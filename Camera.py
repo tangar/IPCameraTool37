@@ -124,7 +124,12 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.checkBoxAutoFocus.clicked.connect(lambda: self.auto_focus())
         self.shotButton.clicked.connect(lambda: self.make_shot())
 
+        self.lightSidePwm.valueChanged.connect(self.setSideLight)
+        self.pbLightSide.clicked.connect(self.setSideLight)
+        
+        self.lightBotPwm.valueChanged.connect(self.setDownLight)
         self.pbLightDown.clicked.connect(self.setDownLight)
+
         self.commentClearBTN.clicked.connect(lambda: self.commentBox.setText(""))
 
 
@@ -135,6 +140,13 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         b0, b1, b2, b3 = Endoscope.prepBotLight(cmd_pwm, cmd_freq)
         self.txSocket.Send(bytes([b0, b1, b2, b3]))
 
+    def setSideLight(self):
+        cmd_pwm = self.lightSidePwm.value()
+        cmd_freq = 20000
+
+        b0, b1, b2, b3 = Endoscope.prepSideLight(cmd_pwm, cmd_freq)
+        self.txSocket.Send(bytes([b0, b1, b2, b3]))
+
     def updateValue(self, value): 
         print(f"new value is {value}")
     
@@ -142,16 +154,16 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.isOnlineControllerCB.setChecked(self.controllerOnline)
         self.isOnlineMainCB.setChecked(self.mainOnline)
         self.isOnlineSecondCB.setChecked(self.secondOnline)
-        str = f"UC is {self.eds.TemperatureUC} deg. Light is {self.eds.TemperatureSide} deg."
+        str = f"Температура контроллера {self.eds.TemperatureUC}. Температура подсветки {self.eds.TemperatureSide}."
         self.statusBar().showMessage(str)
 
     def on_tab_changed(self, index):
         if (index == 0):
             # сделать элементы управления активными
-            print(f"Switched to tab index: {index}")
+            print(f"Отображение боковой камеры")
         elif (index == 1):
             # сделать элементы управления пассивными
-            print(f"Switched to tab index: {index}")
+            print(f"Отображение осевой камеры")
               
     def configPath(self):
         self.camera_config.SAVE_PATH = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
@@ -177,6 +189,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
             
             if (cameraONVIFSide.connected):
                 self.camONVIFSide = cameraONVIFSide
+                self.camONVIFSide.zoom_level = 0.01
                 self.zoomSlider.setValue(int(self.camONVIFSide.zoom_level * 100))
                 self.FocusSlider.setValue(int(self.camONVIFSide.focus_level * 100))
                 self.camONVIFSide.zoom_handler(self.camONVIFSide.zoom_level)
@@ -270,9 +283,9 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
                 full_file_name = self.camera_config.SAVE_PATH + '/'
                 
                 if (prefix != ""): full_file_name += prefix + " "
-                full_file_name += datetime_str + " "    
-                if (commment != ""): full_file_name += commment + " "
-                full_file_name += "Frame.jpg"
+                full_file_name += datetime_str    
+                if (commment != ""): full_file_name += " " + commment
+                full_file_name += ".jpg"
 
                 cv2.imwrite(full_file_name, frame)
                 self.appendText(full_file_name)
