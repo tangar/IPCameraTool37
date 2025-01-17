@@ -392,7 +392,7 @@
            <number>10</number>
           </property>
           <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
          </widget>
         </item>
@@ -471,7 +471,7 @@
            <number>10</number>
           </property>
           <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
          </widget>
         </item>
@@ -608,7 +608,7 @@
            <number>10</number>
           </property>
           <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
          </widget>
         </item>
@@ -675,7 +675,7 @@
            <number>10</number>
           </property>
           <property name="stepType">
-           <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
          </widget>
         </item>

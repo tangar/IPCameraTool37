@@ -132,18 +132,38 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
 
         self.commentClearBTN.clicked.connect(lambda: self.commentBox.setText(""))
 
+        self.motLeft.pressed.connect(self.ActMotLeft)
+        self.motLeft.released.connect(self.ActMotStop)
+        self.motRight.pressed.connect(self.ActMotRight)
+        self.motRight.released.connect(self.ActMotStop)
 
+    def ActMotLeft(self):
+        motDriver_pwm = self.motDriverPwm.value()
+        motCurr_pwm = self.motCurrPwm.value()
+        b0, b1, b2, b3, b4 = Endoscope.prepMotCmd(MotorCommand.MOTOR_COMMAND_BACKWARD, motDriver_pwm, motCurr_pwm)
+        self.txSocket.Send(bytes([b0, b1, b2, b3, b4]))
+    
+    def ActMotRight(self):
+        motDriver_pwm = self.motDriverPwm.value()
+        motCurr_pwm = self.motCurrPwm.value()
+        b0, b1, b2, b3, b4 = Endoscope.prepMotCmd(MotorCommand.MOTOR_COMMAND_FORWARD, motDriver_pwm, motCurr_pwm)
+        self.txSocket.Send(bytes([b0, b1, b2, b3, b4]))
+    
+    def ActMotStop(self):
+        motDriver_pwm = self.motDriverPwm.value()
+        motCurr_pwm = self.motCurrPwm.value()
+        b0, b1, b2, b3, b4 = Endoscope.prepMotCmd(MotorCommand.MOTOR_COMMAND_IDLE, motDriver_pwm, motCurr_pwm)
+        self.txSocket.Send(bytes([b0, b1, b2, b3, b4]))
+    
     def setDownLight(self):
         cmd_pwm = self.lightBotPwm.value()
-        cmd_freq = 1000
-
+        cmd_freq = 20000
         b0, b1, b2, b3 = Endoscope.prepBotLight(cmd_pwm, cmd_freq)
         self.txSocket.Send(bytes([b0, b1, b2, b3]))
 
     def setSideLight(self):
         cmd_pwm = self.lightSidePwm.value()
         cmd_freq = 20000
-
         b0, b1, b2, b3 = Endoscope.prepSideLight(cmd_pwm, cmd_freq)
         self.txSocket.Send(bytes([b0, b1, b2, b3]))
 

@@ -7,6 +7,13 @@ class Commands(Enum):
     CMD_SET_BOTTOM_LIGHT_BRIGHTNESS = 4
     CMD_SET_SIDE_LIGHT_BRIGHTNESS = 5
     CMD_SET_MOTOR_MAX_CURRENT = 6
+    CMD_MOTOR_START_STOP = 7
+
+class MotorCommand(Enum):
+	MOTOR_COMMAND_IDLE = 0      #// Выбег
+	MOTOR_COMMAND_FORWARD = 1   #// Вперед / направо / по часовой стрелке
+	MOTOR_COMMAND_BACKWARD = 2  #// Назад / налево / против часовой стрелки
+	MOTOR_COMMAND_STOP = 3      #// Стоп жесткий
 
 class Light:
     def __init__(self, PWM = 0, Freq = 0, Status = 0, Current = 0):
@@ -71,6 +78,17 @@ class Endoscope:
         b2 = freq % 256
         b3 = freq // 256
         return b0,b1,b2,b3
+
+    def prepMotCmd(cmd: MotorCommand, pwm, current_pwm, hard: bool=True):
+        b0 = Commands.CMD_MOTOR_START_STOP.value
+        b1 = cmd.value
+        b2 = pwm % 256
+        b3 = current_pwm % 256
+        if hard:
+            b4 = 1
+        else:
+            b4 = 0
+        return b0,b1,b2,b3,b4
         
         
         
