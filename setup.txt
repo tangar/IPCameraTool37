@@ -1,0 +1,26 @@
+Список действий для настройки
+
+pip install pyqt5
+pip install opencv-python
+pip install --upgrade onvif_zeep
+python3.13 main.py
+pyqt5-tools designer
+pyqt6-tools designer
+
+Скопировать Содержимое папки WSDL в 
+C:\Users\user\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\wsdl\
+
+Side pwm
+40 -> 2x70 mA
+60 -> 2x130 mA
+80 -> 2x210 mA
+100 -> 2x280 mA
+120 -> 2x370 mA
+128 -> 2x400 mA
+140 -> 2x450 mA
+160 -> 2x530 mA
+180 -> 2x610 mA
+200 -> 2x700 mA
+220 -> 2x770 mA
+255 -> 2x1050 mA
+
