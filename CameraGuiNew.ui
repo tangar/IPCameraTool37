@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1046</width>
-    <height>847</height>
+    <height>848</height>
    </rect>
   </property>
   <property name="documentMode">
@@ -468,7 +468,7 @@
            <number>255</number>
           </property>
           <property name="singleStep">
-           <number>10</number>
+           <number>255</number>
           </property>
           <property name="stepType">
            <enum>QAbstractSpinBox::DefaultStepType</enum>
@@ -602,7 +602,7 @@
            <enum>QAbstractSpinBox::PlusMinus</enum>
           </property>
           <property name="maximum">
-           <number>255</number>
+           <number>200</number>
           </property>
           <property name="singleStep">
            <number>10</number>
