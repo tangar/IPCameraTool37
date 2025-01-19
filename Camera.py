@@ -79,14 +79,12 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         event = threading.Event()
         while(True):
             event.wait(1)
-            print("Send ping packet to board")
             self.txSocket.Send(bytes([Commands.CMD_PING.value]))
 
     def controllerHandlerTask(self):
         event = threading.Event()
         while(True):
             event.wait(0.5)
-            print("Send status request from board")
             self.txSocket.Send(bytes([Commands.CMD_GET_STATUS.value]))
 
     def pingTask(self):

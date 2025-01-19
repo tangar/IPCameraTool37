@@ -48,22 +48,21 @@ class Endoscope:
 
         if (id == 1):
             self.alive = True
-            print(f"CMD_PING")
+            #print(f"CMD_PING")
 
         elif (id == 2):
             self.id = data[0+1]
             self.hw = data[1+1]
             self.sw = data[2+1]
-            print(f"CMD_GET_DEVICE_INFO ID = {self.id} HW = {self.hw} FW = {self.sw}")
+            #print(f"CMD_GET_DEVICE_INFO ID = {self.id} HW = {self.hw} FW = {self.sw}")
         
         elif (id == 3):
             self.TemperatureSide = data[17 + 1]
             self.TemperatureUC = data[18 + 1]
-            print(f"CMD_GET_STATUS LED: {self.TemperatureSide} UC: {self.TemperatureUC}")
+            #print(f"CMD_GET_STATUS LED: {self.TemperatureSide} UC: {self.TemperatureUC}")
         
         else:
-            print(f"Получено сообщение: {id} длиной {rxLen} от {addr}.")
-            print("сообщение не обработано")
+            print(f"Получено сообщение: {id} длиной {rxLen} от {addr}. Cообщение не обработано")
 
     def prepBotLight(pwm, freq):
         b0 = Commands.CMD_SET_BOTTOM_LIGHT_BRIGHTNESS.value

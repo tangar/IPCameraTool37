@@ -29,36 +29,36 @@ class CameraController:
         self.focus_level = 0
         self.iris_level = 0
 
-        self.updateDeviceTime()
+        # self.updateDeviceTime()
 
         # при старте устанавливаем самый широкоугольный режим
         self.zoom_handler(0)
 
-    def updateDeviceTime(self):
-        self.devicemgmt = self.camera.create_devicemgmt_service()
+    # def updateDeviceTime(self):
+    #     self.devicemgmt = self.camera.create_devicemgmt_service()
         
-        # Get system date and time
-        camTime = self.camera.devicemgmt.GetSystemDateAndTime()
+    #     # Get system date and time
+    #     camTime = self.camera.devicemgmt.GetSystemDateAndTime()
 
-        now = datetime.datetime.now()
+    #     now = datetime.datetime.now()
 
-        camTime.TimeZone = 'GMT+0:00:00'
+    #     camTime.TimeZone = 'GMT+0:00:00'
 
-        camTime.UTCDateTime.Date.Year = now.year
-        camTime.UTCDateTime.Date.Month = now.month
-        camTime.UTCDateTime.Date.Day = now.day
+    #     camTime.UTCDateTime.Date.Year = now.year
+    #     camTime.UTCDateTime.Date.Month = now.month
+    #     camTime.UTCDateTime.Date.Day = now.day
 
-        camTime.UTCDateTime.Time.Hour = now.hour
-        camTime.UTCDateTime.Time.Minute = now.minute
-        camTime.UTCDateTime.Time.Second = now.second
+    #     camTime.UTCDateTime.Time.Hour = now.hour
+    #     camTime.UTCDateTime.Time.Minute = now.minute
+    #     camTime.UTCDateTime.Time.Second = now.second
 
-        time_params = self.camera.devicemgmt.create_type('SetSystemDateAndTime')
-        time_params.DateTimeType = 'Manual'
-        time_params.DaylightSavings = True
-        time_params.TimeZone = camTime.TimeZone
-        time_params.UTCDateTime = camTime.UTCDateTime
+    #     time_params = self.camera.devicemgmt.create_type('SetSystemDateAndTime')
+    #     time_params.DateTimeType = 'Manual'
+    #     time_params.DaylightSavings = True
+    #     time_params.TimeZone = camTime.TimeZone
+    #     time_params.UTCDateTime = camTime.UTCDateTime
 
-        self.camera.devicemgmt.SetSystemDateAndTime(time_params)
+    #     self.camera.devicemgmt.SetSystemDateAndTime(time_params)
 
 
     # get ZOOM absoluteMove request
