@@ -80,6 +80,7 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         while(True):
             event.wait(1)
             self.txSocket.Send(bytes([Commands.CMD_PING.value]))
+            self.txSocket.Send(bytes([Commands.CMD_GET_DEVICE_INFO.value]))
 
     def controllerHandlerTask(self):
         event = threading.Event()
@@ -172,8 +173,20 @@ class App(QtWidgets.QMainWindow, CameraGuiNew.Ui_MainWindow):
         self.isOnlineControllerCB.setChecked(self.controllerOnline)
         self.isOnlineMainCB.setChecked(self.mainOnline)
         self.isOnlineSecondCB.setChecked(self.secondOnline)
-        str = f"Температура контроллера {self.eds.TemperatureUC}. Температура подсветки {self.eds.TemperatureSide}."
-        self.statusBar().showMessage(str)
+        
+        self.InfoLabel.setText(f"Эндоскоп: ID = {self.eds.id} WH = {self.eds.hw} SW = {self.eds.sw}")
+        self.tempUCLabel.setText(f"Температура контроллера: {self.eds.TemperatureUC}")
+        self.tempLEDLabel.setText(f"Температура подсветки: {self.eds.TemperatureSide}")
+        
+        if (self.eds.TemperatureUC > 65):
+            self.tempUCLabel.setStyleSheet("background-color: yellow") 
+        else:
+            self.tempUCLabel.setStyleSheet("") 
+
+        if (self.eds.TemperatureSide > 60):
+            self.tempLEDLabel.setStyleSheet("background-color: yellow") 
+        else:
+            self.tempLEDLabel.setStyleSheet("") 
 
     def on_tab_changed(self, index):
         if (index == 0):
